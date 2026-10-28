@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Telephone Directory System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: #f0f4f8; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        header { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: white; 
+            padding: 24px 20px; 
+            text-align: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+        header h1 { font-size: 26px; font-weight: 700; letter-spacing: 0.5px; }
+        header p { font-size: 13px; color: #94a3b8; margin-top: 5px; }
+
+        .main-container { max-width: 950px; width: 92%; margin: 30px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        
+        h3 { font-size: 17px; color: #1e3a8a; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input { width: 100%; padding: 11px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 14px; transition: all 0.2s ease; outline: none; }
+        .input-group input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        .btn-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+        button { padding: 11px 20px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        button:active { transform: scale(0.98); }
+        
+        .btn-add { background: #1e3a8a; color: white; }
+        .btn-add:hover { background: #1d4ed8; }
+        .btn-update { background: #d97706; color: white; }
+        .btn-update:hover { background: #b45309; }
+        .btn-delete { background: #dc2626; color: white; }
+        .btn-delete:hover { background: #b91c1c; }
+        .btn-clear { background: #64748b; color: white; }
+        .btn-clear:hover { background: #475569; }
+        .btn-export { background: #059669; color: white; }
+        .btn-export:hover { background: #047857; }
+        .btn-search { background: #2563eb; color: white; }
+        .btn-search:hover { background: #1d4ed8; }
+
+        .divider { height: 1px; background: #e2e8f0; margin: 25px 0; }
+        
+        .search-section { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .search-inputs { display: flex; gap: 10px; flex: 1; min-width: 260px; }
+        .search-inputs input { flex: 1; padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .search-inputs input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        #totalCount { font-size: 13px; font-weight: 600; background: #e0e7ff; color: #1e3a8a; padding: 5px 12px; border-radius: 20px; }
+        
+        .table-wrapper { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 13px 16px; font-size: 13px; }
+        th { background: #f8fafc; color: #475569; font-weight: 600; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        td { border-bottom: 1px solid #f1f5f9; color: #334155; }
+        tr:hover { background: #f8fafc; cursor: pointer; }
+        tr.selected { background: #eff6ff !important; }
+
+        footer { background: white; border-top: 1px solid #e2e8f0; text-align: center; padding: 18px; font-size: 12px; color: #64748b; margin-top: 40px; }
+        footer span { color: #1e3a8a; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>AI TELEPHONE DIRECTORY SYSTEM</h1>
+        <p>Intelligent Contact Management & Quick Sync</p>
+    </header>
+
+    <div class="main-container">
+        <h3>Contact Details Form</h3>
+        
+        <div class="form-grid">
+            <div class="input-group">
+                <label>Name *</label>
+                <input type="text" id="name" placeholder="Enter full name">
+            </div>
+            <div class="input-group">
+                <label>Phone No *</label>
+                <input type="text" id="phone" placeholder="Enter 10-digit number">
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="name@example.com">
+            </div>
+            <div class="input-group">
+                <label>Address</label>
+                <input type="text" id="address" placeholder="City, Street">
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-add" onclick="addContact()">Add Contact</button>
+            <button class="btn-update" onclick="updateContact()">Update Selected</button>
+            <button class="btn-delete" onclick="deleteContact()">Delete Selected</button>
+            <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="search-section">
+            <div class="search-inputs">
+                <input type="text" id="searchQuery" placeholder="Search by name or phone..." onkeyup="if(event.key==='Enter') searchContact()">
+                <button class="btn-search" onclick="searchContact()">Search</button>
+                <button class="btn-clear" onclick="showAll()">Show All</button>
+            </div>
+            <div>
+                <button class="btn-export" onclick="exportDirectory()">Export Directory</button>
+            </div>
+        </div>
+
+        <div class="table-header">
+            <h3 style="margin:0;">Contact Directory List</h3>
+            <span id="totalCount">Total Contacts: 0</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Select</th>
+                        <th>Name</th>
+                        <th>Phone No</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="5" style="text-align:center; color:#94a3b8; padding: 25px;">No contacts added yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 AI Telephone Directory System. All rights reserved. &nbsp;|&nbsp; Developed by : <span>Shambhuraj Zagade</span>
+    </footer>
+
+    <script>
+        let contacts = JSON.parse(localStorage.getItem('ai_contacts')) || [];
+        let selectedIndex = null;
+
+        function render() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (contacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding: 25px;">No contacts added yet.</td></tr>';
+            } else {
+                contacts.forEach((c, idx) => {
+                    const row = document.createElement('tr');
+                    if (selectedIndex === idx) row.classList.add('selected');
+                    row.onclick = () => selectContact(idx);
+                    
+                    row.innerHTML = `
+                        <td><input type="radio" name="selectRow" ${selectedIndex === idx ? 'checked' : ''}></td>
+                        <td style="font-weight: 500; color: #0f172a;">${escapeHtml(c.name)}</td>
+                        <td>${escapeHtml(c.phone)}</td>
+                        <td>${escapeHtml(c.email || '-')}</td>
+                        <td>${escapeHtml(c.address || '-')}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            document.getElementById('totalCount').innerText = `Total Contacts: ${contacts.length}`;
+            localStorage.setItem('ai_contacts', JSON.stringify(contacts));
+        }
+
+        function selectContact(idx) {
+            selectedIndex = idx;
+            const c = contacts[idx];
+            document.getElementById('name').value = c.name;
+            document.getElementById('phone').value = c.phone;
+            document.getElementById('email').value = c.email;
+            document.getElementById('address').value = c.address;
+            render();
+        }
+
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('address').value = '';
+            selectedIndex = null;
+            render();
+        }
+
+        function addContact() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (!name || !phone) {
+                alert("Please fill in both Name and Phone Number!");
+                return;
+            }
+
+            contacts.push({ name, phone, email, address });
+            clearForm();
+            render();
+        }
+
+        function updateContact() {
+            if (selectedIndex === null) {
+                alert("Please select a contact from the table to update!");
+                return;
+            }
+
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (!name || !phone) {
+                alert("Please fill in both Name and Phone Number!");
+                return;
+            }
+
+            contacts[selectedIndex] = { name, phone, email, address };
+            clearForm();
+            render();
+        }
+
+        function deleteContact() {
+            if (selectedIndex === null) {
+                alert("Please select a contact from the table to delete!");
+                return;
+            }
+
+            if (confirm("Are you sure you want to delete this contact?")) {
+                contacts.splice(selectedIndex, 1);
+                clearForm();
+                render();
+            }
+        }
+
+        function searchContact() {
+            const query = document.getElementById('searchQuery').value.toLowerCase().trim();
+            if (!query) {
+                render();
+                return;
+            }
+
+            const filtered = contacts.filter(c => c.name.toLowerCase().includes(query) || c.phone.includes(query));
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding: 25px;">No matching contacts found.</td></tr>';
+            } else {
+                filtered.forEach((c) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>-</td>
+                        <td style="font-weight: 500; color: #0f172a;">${escapeHtml(c.name)}</td>
+                        <td>${escapeHtml(c.phone)}</td>
+                        <td>${escapeHtml(c.email || '-')}</td>
+                        <td>${escapeHtml(c.address || '-')}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        function showAll() {
+            document.getElementById('searchQuery').value = '';
+            render();
+        }
+
+        function exportDirectory() {
+            if (contacts.length === 0) {
+                alert("No contacts available to export!");
+                return;
+            }
+
+            let text = "AI TELEPHONE DIRECTORY SYSTEM\n==============================\n\n";
+            contacts.forEach((c, i) => {
+                text += `${i+1}. Name: ${c.name}\n   Phone: ${c.phone}\n   Email: ${c.email || '-'}\n   Address: ${c.address || '-'}\n\n`;
+            });
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'telephone_directory.txt';
+            a.click();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        render();
+    </script>
+</body>
+</html>
